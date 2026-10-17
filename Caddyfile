@@ -1,0 +1,9 @@
+{
+    frankenphp
+}
+
+:{\} {
+    root * public/
+    encode zstd br gzip
+    php_server
+}

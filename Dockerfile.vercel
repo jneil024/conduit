@@ -1,0 +1,23 @@
+FROM dunglas/frankenphp:1-php8.3
+
+# Install system dependencies and PHP extensions (including pdo_pgsql)
+RUN install-php-extensions \
+    pdo_pgsql \
+    pdo_mysql \
+    bcmath \
+    gd \
+    intl \
+    zip \
+    opcache
+
+# Copy application code
+WORKDIR /app
+COPY . /app
+
+# Install Composer dependencies
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
+
+# Set permissions and startup command
+RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
+CMD ["frankenphp", "run", "--config", "/app/Caddyfile"]
